@@ -5,6 +5,7 @@ if (!empty($_POST)) {
     if (isset($_POST['crear_tarea'])) {
         $tarea = ucwords(strtolower(trim(filter_input(INPUT_POST, 'tarea', FILTER_SANITIZE_STRING))));
         $tareas[] = $tarea;
+        $tareasCompletadas[] = false;
     } else if (isset($_GET['borrar_tarea'])) {
         $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT);
         unset($tareas[tareaId]);
@@ -44,7 +45,7 @@ if (!empty($_POST)) {
             </fieldset>
             <fieldset>
                 <legend>Lista de Tareas:</legend>
-                <?php if (empty($agenda)): ?>
+                <?php if (empty($tareas)): ?>
                     <p>No hay tareas</p>
                 <?php else: ?>
                     <table>
@@ -57,8 +58,8 @@ if (!empty($_POST)) {
                         </thead>
                         <?php foreach ($tareas as $numTarea => $tarea): ?>
                             <tr>
-                                <td>$numTarea</td>
-                                <td>$tarea</td>
+                                <td><?= $numTarea ?></td>
+                                <td><?= $tarea ?></td>
                                 <td><?= ($tareasCompletadas[$numTarea]) ? "Si" : "No" ?></td>
                             </tr>
                             <input type='hidden' name="<?= "tareas[]" ?>" value="<?= $tarea ?>">
