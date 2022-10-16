@@ -46,6 +46,11 @@ label {
     max-width: 100px;
 }
 
+td, th {
+  text-align: center;
+}
+
+
 input{ 
     max-width: 150px;
     border-style: none; 
