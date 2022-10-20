@@ -9,13 +9,13 @@ if (!empty($_POST)) {
             $tareasCompletadas[] = false; // Añado el estado falso a la lista de estados de completado
         }
     } else if (isset($_POST['borrar_tarea'])) { // Si se solicita que se borre la tarea 
-        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT); // Se lee el número de tarea (uno más que el índice real)          
+        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)          
         unset($tareas[$tareaId]); // Se borra la tarea de la lista
         unset($tareasCompletadas[$tareaId]); // Se borra el estado de completado de la lista
         $tareas = array_values($tareas); // Se reindexa la lista de tareas para que los índices sean consecutivos
         $tareasCompletadas = array_values($tareasCompletadas); // Se reindexa la lista de estados para que los índices sean consecutivos    
     } else if (isset($_POST['completar_tarea'])) { // Si se solicita que se complete una tarea
-        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT); // Se lee el número de tarea (uno más que el índice real)
+        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)
         $tareasCompletadas[$tareaId] = true; // Se cambia el estado de completado de la tarea
     } else if (isset($_GET['limpiar_tareas'])) { // Si se solicita que se complete una tarea
         $tareas = array(); // Se vacía la lista de tareas
