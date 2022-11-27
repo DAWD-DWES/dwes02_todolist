@@ -82,8 +82,10 @@ if (!empty($_POST)) {
                         <input id="tarea" type="number" min="1" max=<?= count($tareas) ?> value="1" name="tarea_id">
                         <input class="submit blue" type="submit" value="Tarea Completada" name='completar_tarea'/>
                         <input class="submit blue" type="submit" value="Tarea Borrada" name='borrar_tarea'/>
-                        <input class="submit red" type="submit" formaction="<?= "{$_SERVER['PHP_SELF']}?limpiar_tareas=1" ?>"  value="Vaciar Agenda">
-                    </div>
+                        <input class="submit red" type="submit" formaction="<?= "{$_SERVER['PHP_SELF']}?limpiar_tareas" ?>"  value="Vaciar Agenda">
+                        <!-- <input class="submit red" type="submit" formmethod="GET" value="Vaciar Agenda" name="limpiar_tareas"> -->
+                     <!-- <a href="<?= $_SERVER['PHP_SELF'] ?>"><input class="submit red" value="Vaciar Agenda"></a> -->
+                    </div> 
                 </fieldset>
             <?php endif ?>
         </form>
