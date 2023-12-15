@@ -1,25 +1,25 @@
 <?php
-if (!empty($_POST)) {
-    $tareas = (filter_input(INPUT_POST, 'tareas', FILTER_UNSAFE_RAW, FILTER_REQUIRE_ARRAY)) ?? array(); // Contiene la lista de tareas
-    $tareasCompletadas = (filter_input(INPUT_POST, 'tareasCompletadas', FILTER_VALIDATE_BOOLEAN, FILTER_REQUIRE_ARRAY)) ?? array(); // Contiene la lista de los estados de completado de las tareas
-    if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación de una tarea
-        $tarea = (trim(filter_input(INPUT_POST, 'tarea', FILTER_UNSAFE_RAW))); // Lee la tarea del formulario
-        if (!empty($tarea)) { // Si la tarea no es la cadena vacía
-            $tareas[] = $tarea; // Añado la tarea a la lista
-            $tareasCompletadas[] = false; // Añado el estado falso a la lista de estados de completado
-        }
-    } else if (filter_has_var(INPUT_POST, 'borrar_tarea')) { // Si se solicita que se borre la tarea 
-        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)          
-        unset($tareas[$tareaId]); // Se borra la tarea de la lista
-        unset($tareasCompletadas[$tareaId]); // Se borra el estado de completado de la lista
-        $tareas = array_values($tareas); // Se reindexa la lista de tareas para que los índices sean consecutivos
-        $tareasCompletadas = array_values($tareasCompletadas); // Se reindexa la lista de estados para que los índices sean consecutivos    
-    } else if (filter_has_var(INPUT_POST, 'completar_tarea')) { // Si se solicita que se complete una tarea
-        $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)
-        $tareasCompletadas[$tareaId] = true; // Se cambia el estado de completado de la tarea
-    } else if (filter_has_var(INPUT_, 'limpiar_tareas')) { // Si se solicita que se complete una tarea
-        $tareas = array(); // Se vacía la lista de tareas
+$tareas = (filter_input(INPUT_POST, 'tareas', FILTER_UNSAFE_RAW, FILTER_REQUIRE_ARRAY)) ?? []; // Contiene la lista de tareas
+$tareasCompletadas = (filter_input(INPUT_POST, 'tareasCompletadas', FILTER_VALIDATE_BOOLEAN, FILTER_REQUIRE_ARRAY)) ?? []; // Contiene la lista de los estados de completado de las tareas
+if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación de una tarea
+    $tarea = (trim(filter_input(INPUT_POST, 'tarea', FILTER_UNSAFE_RAW))); // Lee la tarea del formulario
+    if (empty($tarea)) { // Si la tarea no es la cadena vacía
+        $errorNombreTarea = true; //Error en el valor introducido como nombre de tarea
+    } else {
+        $tareas[] = $tarea; // Añado la tarea a la lista
+        $tareasCompletadas[] = false; // Añado el estado falso a la lista de estados de completado
     }
+} else if (filter_has_var(INPUT_POST, 'borrar_tarea')) { // Si se solicita que se borre la tarea 
+    $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)          
+    unset($tareas[$tareaId]); // Se borra la tarea de la lista
+    unset($tareasCompletadas[$tareaId]); // Se borra el estado de completado de la lista
+    $tareas = array_values($tareas); // Se reindexa la lista de tareas para que los índices sean consecutivos
+    $tareasCompletadas = array_values($tareasCompletadas); // Se reindexa la lista de estados para que los índices sean consecutivos    
+} else if (filter_has_var(INPUT_POST, 'completar_tarea')) { // Si se solicita que se complete una tarea
+    $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)
+    $tareasCompletadas[$tareaId] = true; // Se cambia el estado de completado de la tarea
+} else if (filter_has_var(INPUT_GET, 'limpiar_tareas')) { // Si se solicita que se complete una tarea
+    $tareas = []; // Se vacía la lista de tareas
 }
 ?>
 <!DOCTYPE html>
@@ -38,7 +38,7 @@ if (!empty($_POST)) {
                 <div class="form-section">
                     <label for="tarea">Tarea:</label>
                     <input id="tarea" type="text" name="tarea">
-                    <?php if (isset($tarea) && empty($tarea)): ?> <!-- Si la tarea está vacía es muestra un mensaje de error -->
+                    <?php if (isset($errorNombreTarea)): ?> <!-- Si la tarea está vacía es muestra un mensaje de error -->
                         <p class="error">(*) Nombre obligatorio</p>
                     <?php endif ?>
                 </div>
@@ -83,7 +83,7 @@ if (!empty($_POST)) {
                         <input class="submit blue" type="submit" value="Tarea Completada" name='completar_tarea'/>
                         <input class="submit blue" type="submit" value="Tarea Borrada" name='borrar_tarea'/>
                         <input class="submit red" type="submit" formmethod = "GET" formaction="<?= "{$_SERVER['PHP_SELF']}?limpiar_tareas" ?>"  value="Vaciar Agenda">
-                        <!-- Otras dos maneras de enviar la petición al servidor -->   
+                        <!-- Otra manera de enviar la petición al servidor con un mensaje GET-->   
                         <!-- Esta forma no requiere que el botón sea de tipo submit -->
                         <!-- <a href="<?= "{$_SERVER['PHP_SELF']}?limpiar_tareas" ?>"><input class="submit red" value="Vaciar Agenda"></a> -->                     </div> 
                 </fieldset>
