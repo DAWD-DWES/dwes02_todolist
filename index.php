@@ -1,25 +1,19 @@
 <?php
 $tareas = (filter_input(INPUT_POST, 'tareas', FILTER_UNSAFE_RAW, FILTER_REQUIRE_ARRAY)) ?? []; // Contiene la lista de tareas
-$tareasCompletadas = (filter_input(INPUT_POST, 'tareasCompletadas', FILTER_VALIDATE_BOOLEAN, FILTER_REQUIRE_ARRAY)) ?? []; // Contiene la lista de los estados de completado de las tareas
 if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación de una tarea
     $tarea = (trim(filter_input(INPUT_POST, 'tarea', FILTER_UNSAFE_RAW))); // Lee la tarea del formulario
     if (empty($tarea)) { // Si la tarea no es la cadena vacía
         $errorNombreTarea = true; //Error en el valor introducido como nombre de tarea
     } else {
-        $tareas[] = $tarea; // Añado la tarea a la lista
-        $tareasCompletadas[] = false; // Añado el estado falso a la lista de estados de completado
+        $tareas[] = ['nombre' => $tarea, 'estado' => 0]; // Añado la tarea a la lista
     }
 } else if (filter_has_var(INPUT_POST, 'borrar_tarea')) { // Si se solicita que se borre la tarea 
     $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)          
     unset($tareas[$tareaId]); // Se borra la tarea de la lista
-    unset($tareasCompletadas[$tareaId]); // Se borra el estado de completado de la lista
     $tareas = array_values($tareas); // Se reindexa la lista de tareas para que los índices sean consecutivos
-    $tareasCompletadas = array_values($tareasCompletadas); // Se reindexa la lista de estados para que los índices sean consecutivos    
 } else if (filter_has_var(INPUT_POST, 'completar_tarea')) { // Si se solicita que se complete una tarea
     $tareaId = filter_input(INPUT_POST, 'tarea_id', FILTER_VALIDATE_INT) - 1; // Se lee el número de tarea (uno más que el índice real)
-    $tareasCompletadas[$tareaId] = true; // Se cambia el estado de completado de la tarea
-} else if (filter_has_var(INPUT_GET, 'limpiar_tareas')) { // Si se solicita que se complete una tarea
-    $tareas = []; // Se vacía la lista de tareas
+    $tareas[$tareaId]['estado'] = 1; // Se cambia el estado de completado de la tarea
 }
 ?>
 <!DOCTYPE html>
@@ -64,11 +58,11 @@ if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación 
                             <?php foreach ($tareas as $numTarea => $tarea): ?> <!-- Bucle de creación de las filas de la tabla -->
                                 <tr>
                                     <td><?= $numTarea + 1 ?></td> <!-- Añado uno al índice para que la lista se inicie en 1 -->
-                                    <td><?= $tarea ?></td>
-                                    <td><?= ($tareasCompletadas[$numTarea]) ? "Si" : "No" ?></td>
+                                    <td><?= $tarea['nombre'] ?></td>
+                                    <td><?= ($tarea['estado']) ? "Si" : "No" ?></td>
                                 </tr>
-                            <input type='hidden' name="<?= "tareas[]" ?>" value="<?= htmlspecialchars($tarea) ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareas -->
-                            <input type='hidden' name="<?= "tareasCompletadas[]" ?>" value="<?= $tareasCompletadas[$numTarea] ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareasCompletadas -->
+                            <input type='hidden' name="<?= "tareas[$numTarea][nombre]" ?>" value="<?= $tarea['nombre'] ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareas -->
+                            <input type='hidden' name="<?= "tareas[$numTarea][estado]" ?>" value="<?= $tarea['estado'] ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareasCompletadas -->
                         <?php endforeach ?>
                         </tbody>
                     </table>
