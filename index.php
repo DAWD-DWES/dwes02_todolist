@@ -67,7 +67,7 @@ if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación 
                                     <td><?= $tarea ?></td>
                                     <td><?= ($tareasCompletadas[$numTarea]) ? "Si" : "No" ?></td>
                                 </tr>
-                            <input type='hidden' name="<?= "tareas[]" ?>" value="<?= $tarea ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareas -->
+                            <input type='hidden' name="<?= "tareas[]" ?>" value="<?= htmlspecialchars($tarea) ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareas -->
                             <input type='hidden' name="<?= "tareasCompletadas[]" ?>" value="<?= $tareasCompletadas[$numTarea] ?>"> <!-- Incluyo cada tarea en el input que va recogiendo todos los valores en el array tareasCompletadas -->
                         <?php endforeach ?>
                         </tbody>
