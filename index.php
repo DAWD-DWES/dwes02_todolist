@@ -1,8 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['tareas'])) {
-    $_SESSION['tareas'] = []; // Contiene la lista de tareas
-}
+
 if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación de una tarea
     $tarea = trim(filter_input(INPUT_POST, 'tarea', FILTER_UNSAFE_RAW)); // Lee la tarea del formulario
     if (empty($tarea)) { // Si la tarea no es la cadena vacía
@@ -21,6 +19,7 @@ if (filter_has_var(INPUT_POST, 'crear_tarea')) { // Si se solicita la creación 
     $_SESSION['tareas'] = [];
 }
 $tareas = $_SESSION['tareas'];
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
